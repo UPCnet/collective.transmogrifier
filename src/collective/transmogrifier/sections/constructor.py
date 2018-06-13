@@ -48,7 +48,12 @@ class ConstructorSection(object):
 
             path = path.encode('ASCII')
             container, id = posixpath.split(path.strip('/'))
-            context = traverse(self.context, container, None)
+
+            #context = traverse(self.context, container, None)
+            from plone import api
+            ppath = '/'.join(path.split('/')[:-1])
+            context = api.content.get(path=ppath)
+            
             if context is None:
                 error = 'Container %s does not exist for item %s' % (
                     container, path)
