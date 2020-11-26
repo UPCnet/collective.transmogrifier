@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_base
+
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
 from collective.transmogrifier.utils import traverse
-from Products.CMFCore.utils import getToolByName
+from plone import api
 from zope.interface import classProvides
 from zope.interface import implements
 
@@ -22,7 +23,7 @@ class ConstructorSection(object):
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
         self.context = transmogrifier.context
-        self.ttool = getToolByName(self.context, 'portal_types')
+        self.ttool = api.portal.get_tool(name='portal_types')
 
         self.typekey = defaultMatcher(options, 'type-key', name, 'type',
                                       ('portal_type', 'Type'))
@@ -53,7 +54,7 @@ class ConstructorSection(object):
             from plone import api
             ppath = '/'.join(path.split('/')[:-1])
             context = api.content.get(path=ppath)
-            
+
             if context is None:
                 error = 'Container %s does not exist for item %s' % (
                     container, path)
